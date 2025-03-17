@@ -39,10 +39,31 @@ public class ProductListPageServletTest {
     }
 
     @Test
-    public void testDoGet() throws ServletException, IOException {
+    public void testDoGetSetsProductsAttribute() throws ServletException, IOException {
         servlet.doGet(request, response);
 
         verify(requestDispatcher).forward(request, response);
         verify(request).setAttribute(eq("products"), any());
+    }
+
+    @Test
+    public void testDoGetGetsQueryParam() throws ServletException, IOException {
+        servlet.doGet(request, response);
+
+        verify(request).getParameter(eq("query"));
+    }
+
+    @Test
+    public void testDoGetGetsSortParam() throws ServletException, IOException {
+        servlet.doGet(request, response);
+
+        verify(request).getParameter(eq("sort"));
+    }
+
+    @Test
+    public void testDoGetGetsOrderParam() throws ServletException, IOException {
+        servlet.doGet(request, response);
+
+        verify(request).getParameter(eq("order"));
     }
 }

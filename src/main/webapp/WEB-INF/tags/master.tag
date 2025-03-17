@@ -17,5 +17,8 @@
   <main>
     <jsp:doBody/>
   </main>
+  <footer>
+    (C) ExpertSoft 2025
+  </footer>
 </body>
 </html>
