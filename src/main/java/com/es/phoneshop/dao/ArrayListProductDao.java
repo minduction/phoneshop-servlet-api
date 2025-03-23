@@ -15,13 +15,12 @@ import java.util.stream.Collectors;
 
 public class ArrayListProductDao implements ProductDao {
 
-    private static ProductDao instance;
+    private static final class ProductDaoHolder {
+        private static final ProductDao instance = new ArrayListProductDao();
+    }
 
-    public static synchronized ProductDao getInstance() {
-        if (instance == null) {
-            instance = new ArrayListProductDao();
-        }
-        return instance;
+    public static ProductDao getInstance() {
+        return ProductDaoHolder.instance;
     }
 
     private long maxProductId;

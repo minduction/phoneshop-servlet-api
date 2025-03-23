@@ -1,6 +1,7 @@
 package com.es.phoneshop.web;
 
 import jakarta.servlet.ServletConfig;
+import jakarta.servlet.http.HttpSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +30,8 @@ public class ProductListPageServletTest {
     private RequestDispatcher requestDispatcher;
     @Mock
     private ServletConfig config;
+    @Mock
+    private HttpSession session;
 
     private final ProductListPageServlet servlet = new ProductListPageServlet();
 
@@ -36,6 +39,7 @@ public class ProductListPageServletTest {
     public void setup() throws ServletException {
         servlet.init(config);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        when(request.getSession()).thenReturn(session);
     }
 
     @Test
