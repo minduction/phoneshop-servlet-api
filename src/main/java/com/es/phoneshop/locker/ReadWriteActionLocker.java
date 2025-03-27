@@ -1,5 +1,7 @@
 package com.es.phoneshop.locker;
 
+import com.es.phoneshop.exceptions.OutOfStockException;
+
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
@@ -20,6 +22,16 @@ public class ReadWriteActionLocker {
         lock.writeLock().lock();
         try{
             action.run();
+        }
+        finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    public void writeWithOutOfStockException(WriteActionWithOutOfStockException action) throws OutOfStockException {
+        lock.writeLock().lock();
+        try{
+            action.write();
         }
         finally {
             lock.writeLock().unlock();
