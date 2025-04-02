@@ -5,6 +5,8 @@ import com.es.phoneshop.dao.ArrayListProductDao;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.enums.SortField;
 import com.es.phoneshop.enums.SortOrder;
+import com.es.phoneshop.exceptions.OutOfStockException;
+import com.es.phoneshop.model.Cart;
 import com.es.phoneshop.model.CartService;
 import com.es.phoneshop.model.DefaultCartService;
 import jakarta.servlet.ServletException;
@@ -12,6 +14,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
@@ -35,6 +39,45 @@ public class ProductListPageServlet extends HttpServlet {
                 parseEnum(sortOrder, SortOrder.class)));
         request.setAttribute("cart", cartService.getCart(request));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String quantityString = request.getParameter("quantity");
+        String productIdString = request.getParameter("productId");
+        Long productId = Long.parseLong(productIdString);
+        int quantity;
+        try {
+            NumberFormat numberFormat = NumberFormat.getInstance(request.getLocale());
+            quantity = numberFormat.parse(quantityString).intValue();
+        } catch (ParseException e) {
+            handleError(e, productId, request, response);
+            return;
+        }
+        Cart cart = cartService.getCart(request);
+        try {
+            cartService.add(cart, productId, quantity);
+        } catch (OutOfStockException | IllegalArgumentException e) {
+            handleError(e, productId, request, response);
+            return;
+        }
+        response.sendRedirect(getServletContext().getContextPath() + "/products" + "?message=Product added to cart successfully!");
+    }
+
+    private void handleError(Exception e, Long errorProductId, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (e.getClass() == ParseException.class){
+            request.setAttribute("error", "Not a number");
+        } else {
+            if (e.getClass() == OutOfStockException.class){
+                request.setAttribute("error", "Out of stock, available = " + ((OutOfStockException)e).getQuantityAvailable());
+            } else {
+                if (e.getClass() == IllegalArgumentException.class){
+                    request.setAttribute("error", "Value must be a positive number");
+                }
+            }
+        }
+        request.setAttribute("errorProductId", errorProductId);
+        doGet(request, response);
     }
 
     private <T extends Enum<T>> T parseEnum(String stringValue, Class<T> enumClass) {

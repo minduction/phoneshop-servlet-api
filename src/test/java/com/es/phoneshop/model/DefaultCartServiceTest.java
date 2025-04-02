@@ -100,4 +100,42 @@ public class DefaultCartServiceTest {
                 .findAny().get().getQuantity());
     }
 
+    @Test
+    public void testUpdateCartSeveralTimes() throws OutOfStockException {
+        Cart cart = defaultCartService.getCart(request);
+        Long productId = 1L;
+        defaultCartService.update(cart, productId, 1);
+        defaultCartService.update(cart, productId, 1);
+
+        Assert.assertEquals(1, cart.getItems().stream()
+                .filter(item -> productId.equals(item.getProduct().getId()))
+                .findAny().get().getQuantity());
+    }
+
+    @Test(expected = OutOfStockException.class)
+    public void testUpdateOutOfStock() throws OutOfStockException {
+        Cart cart = defaultCartService.getCart(request);
+        Long productId = 1L;
+
+        defaultCartService.update(cart, productId, 1000000);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateNegativeQuantity() throws OutOfStockException {
+        Cart cart = defaultCartService.getCart(request);
+        Long productId = 1L;
+
+        defaultCartService.update(cart, productId, -1);
+    }
+
+    @Test
+    public void testRemove() throws OutOfStockException {
+        Cart cart = defaultCartService.getCart(request);
+        Long productId = 1L;
+        defaultCartService.update(cart, productId, 1);
+        defaultCartService.remove(cart, productId);
+
+        Assert.assertEquals(0, cart.getItems().size());
+    }
+
 }
