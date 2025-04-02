@@ -59,26 +59,19 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String quantityString = request.getParameter("quantity");
         Long productId = parseProductIdFromRequest(request);
 
-        int quantity;
-        try {
-            NumberFormat numberFormat = NumberFormat.getInstance(request.getLocale());
-            quantity = numberFormat.parse(quantityString).intValue();
-        } catch (ParseException e) {
-            request.setAttribute("error", "Not a number");
+        Integer quantity = parseQuantityFromString(quantityString, request);
+        if (quantity == null || quantity <= 0) {
+            request.setAttribute("error", "Invalid number value");
+            request.setAttribute("errorProductId", productId);
             doGet(request, response);
             return;
         }
-
         Cart cart = cartService.getCart(request);
         try {
             cartService.add(cart, productId, quantity);
         } catch (OutOfStockException e) {
             request.setAttribute("error", "Out of stock, available = " + e.getQuantityAvailable());
-            doGet(request, response);
-            return;
-        }
-        catch (IllegalArgumentException e){
-            request.setAttribute("error", "Value must be a positive number");
+            request.setAttribute("errorProductId", productId);
             doGet(request, response);
             return;
         }
@@ -88,5 +81,15 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private Long parseProductIdFromRequest(HttpServletRequest request) {
         String productId = request.getPathInfo().substring(INDEX_FOR_ID_SUBSTRING);
         return Long.parseLong(productId);
+    }
+
+    private Integer parseQuantityFromString(String quantity, HttpServletRequest request){
+        NumberFormat numberFormat = NumberFormat.getInstance(request.getLocale());
+        try{
+            return numberFormat.parse(quantity).intValue();
+        }
+        catch (ParseException e){
+            return null;
+        }
     }
 }

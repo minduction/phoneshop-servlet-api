@@ -108,4 +108,17 @@ public class Product implements Serializable {
     public List<PriceHistory> getProductPriceHistory() { return this.productPriceHistory; }
 
     public void setProductPriceHistory(List<PriceHistory> productPriceHistory) { this.productPriceHistory = productPriceHistory; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return id != null && id.equals(product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode() * 31;
+    }
 }
