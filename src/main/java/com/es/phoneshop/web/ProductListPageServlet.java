@@ -1,18 +1,18 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.dao.ArrayListProductDao;
-
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.enums.SortField;
 import com.es.phoneshop.enums.SortOrder;
 import com.es.phoneshop.exceptions.OutOfStockException;
-import com.es.phoneshop.model.Cart;
-import com.es.phoneshop.model.CartService;
-import com.es.phoneshop.model.DefaultCartService;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.cart.DefaultCartService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
