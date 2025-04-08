@@ -46,6 +46,11 @@ public class ProductDetailsPageServletTest {
     private static final String RECENTLY_VISITED_SESSION_ATTRIBUTE = "recentlyVisitedProducts";
     private static final String EXISTING_PRODUCT_PATH_INFO = "/1";
     private static final String NON_EXISTING_PRODUCT_PATH_INFO = "/9999";
+    private static final String VALID_QUANTITY = "1";
+    private static final String NOT_A_NUMBER_QUANTITY = "asd";
+    private static final String TOO_BIG_QUANTITY = "1000000";
+    private static final String QUANTITY_PARAMETER_NAME = "quantity";
+    private static final String INVALID_NUMBER_VALUE_MESSAGE = "Invalid number value";
 
     @Before
     public void setup() throws ServletException {
@@ -97,7 +102,7 @@ public class ProductDetailsPageServletTest {
     @Test
     public void testDoPostWithValidData() throws ServletException, IOException {
         when(request.getPathInfo()).thenReturn(EXISTING_PRODUCT_PATH_INFO);
-        when(request.getParameter(eq("quantity"))).thenReturn("1");
+        when(request.getParameter(eq(QUANTITY_PARAMETER_NAME))).thenReturn(VALID_QUANTITY);
         servlet.doPost(request, response);
 
         verify(response).sendRedirect(servletContext.getContextPath() + "/products" + EXISTING_PRODUCT_PATH_INFO + "?message=Product added to cart successfully!");
@@ -106,17 +111,17 @@ public class ProductDetailsPageServletTest {
     @Test
     public void testDoPostWithNotANumber() throws ServletException, IOException {
         when(request.getPathInfo()).thenReturn(EXISTING_PRODUCT_PATH_INFO);
-        when(request.getParameter(eq("quantity"))).thenReturn("asd");
+        when(request.getParameter(eq(QUANTITY_PARAMETER_NAME))).thenReturn(NOT_A_NUMBER_QUANTITY);
         servlet.doPost(request, response);
 
-        verify(request).setAttribute("error", "Not a number");
+        verify(request).setAttribute("error", INVALID_NUMBER_VALUE_MESSAGE);
         verify(response, times(0)).sendRedirect(any());
     }
 
     @Test
     public void testDoPostWithBigQuantity() throws ServletException, IOException {
         when(request.getPathInfo()).thenReturn(EXISTING_PRODUCT_PATH_INFO);
-        when(request.getParameter(eq("quantity"))).thenReturn("10000");
+        when(request.getParameter(eq(QUANTITY_PARAMETER_NAME))).thenReturn(TOO_BIG_QUANTITY);
         servlet.doPost(request, response);
 
         verify(request).setAttribute(eq("error"), anyString());
