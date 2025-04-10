@@ -4,6 +4,7 @@ import com.es.phoneshop.dao.ArrayListProductDao;
 import com.es.phoneshop.dao.ProductDao;
 import com.es.phoneshop.enums.SortField;
 import com.es.phoneshop.enums.SortOrder;
+import com.es.phoneshop.exceptions.ProductNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,10 +12,9 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Currency;
 import java.util.List;
-import java.util.NoSuchElementException;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class ArrayListProductDaoTest
@@ -47,7 +47,7 @@ public class ArrayListProductDaoTest
         assertEquals(testProduct, productDao.getProduct(testProduct.getId()));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = ProductNotFoundException.class)
     public void testDeleteProduct() {
         Product testProduct = new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), USD_CURRENCY, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
         productDao.save(testProduct);

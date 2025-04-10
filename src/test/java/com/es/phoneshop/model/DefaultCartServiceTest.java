@@ -1,6 +1,8 @@
 package com.es.phoneshop.model;
 
 import com.es.phoneshop.exceptions.OutOfStockException;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.DefaultCartService;
 import com.es.phoneshop.web.DemoDataServletContextListener;
 import com.es.phoneshop.web.ProductDetailsPageServlet;
 import jakarta.servlet.ServletConfig;
@@ -15,6 +17,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -138,4 +142,16 @@ public class DefaultCartServiceTest {
         Assert.assertEquals(0, cart.getItems().size());
     }
 
+    @Test
+    public void testClear() throws OutOfStockException {
+        Cart cart = defaultCartService.getCart(request);
+        defaultCartService.update(cart, 1L, 2);
+        defaultCartService.update(cart, 3L, 1);
+        defaultCartService.clear(request.getSession(), cart);
+
+        verify(request.getSession()).removeAttribute(CART_SESSION_ATTRIBUTE);
+        Assert.assertEquals(0, cart.getItems().size());
+        Assert.assertEquals(0, cart.getTotalQuantity());
+        Assert.assertEquals(BigDecimal.ZERO, cart.getTotalCost());
+    }
 }

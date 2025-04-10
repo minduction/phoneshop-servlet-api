@@ -1,9 +1,9 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.exceptions.OutOfStockException;
-import com.es.phoneshop.model.Cart;
-import com.es.phoneshop.model.CartService;
-import com.es.phoneshop.model.DefaultCartService;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.cart.DefaultCartService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;

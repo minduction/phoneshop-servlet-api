@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.exceptions.ProductNotFoundException;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -16,7 +17,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.util.Locale;
-import java.util.NoSuchElementException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -92,7 +92,7 @@ public class ProductDetailsPageServletTest {
         verify(request).setAttribute(eq("cart"), any());
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test(expected = ProductNotFoundException.class)
     public void testDoGetNonExistingProduct() throws ServletException, IOException {
         when(request.getPathInfo()).thenReturn(NON_EXISTING_PRODUCT_PATH_INFO);
 

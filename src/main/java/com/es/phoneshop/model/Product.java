@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
 
-public class Product implements Serializable {
+public class Product implements Serializable, GenericUniqueItem {
     private Long id;
     private String code;
     private String description;
@@ -49,6 +49,7 @@ public class Product implements Serializable {
         this.imageUrl = imageUrl;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
