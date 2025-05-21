@@ -18,6 +18,7 @@
     <a href="${pageContext.servletContext.contextPath}/cart">
       <jsp:include page="/cart/miniCart"/>
     </a>
+
   </header>
   <p>
     Cart: ${cart}
